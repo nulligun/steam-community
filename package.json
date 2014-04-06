@@ -8,10 +8,7 @@
 		"type": "git",
 		"url" : "https://github.com/waylonflinn/steam-community.git"
 	},
-	"author": {
-		"name": "Waylon Flinn",
-		"email": "waylonflinn@gmail.com"
-	},
+	"author": "Waylon Flinn <waylonflinn@gmail.com>",
 	"engines": {
 		"node": ">=0.6"
 	},
@@ -19,5 +16,5 @@
 		"request": "2.10.x",
 		"xml2js": "0.1.x",
 		"re": "0.1.x"
-	},
+	}
 }
