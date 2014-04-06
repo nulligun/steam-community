@@ -1,32 +1,23 @@
 {
-  "name": "steam-community",
-  "version": "0.1.5-5",
-  "description": "Easily access information about yourself and your friends on the Steam community website.",
-  "tags": [
-    "steam",
-    "data",
-    "util",
-    "utility"
-  ],
-  "author": {
-    "name": "Waylon Flinn",
-    "email": "waylonflinn@gmail.com"
-  },
-  "engines": {
-    "node": ">=0.6"
-  },
-  "main": "./main",
-  "dependencies": {
-    "request": "2.10.x",
-    "xml2js": "0.1.x",
-    "re": "0.1.x"
-  },
-  "readme": "# Steam Community \n\nEasily access information about yourself and your friends on the Steam community website.\nGiven a 64bit Steam ID, this module retrieves a user's XML from the Steam Community\nsite and returns a parsed JSON object. Awesome!\n\nIncludes configurable timeouts and retry, provided by the [Re](https://npmjs.org/package/re) package.\n\n## Install\n\n<pre>\n  npm install steam-community\n</pre>\n\n## Usage\n\nGet your 64bit steam ID and plug it in. You'll get back an object with all the infos.\n\n<pre>\nvar steam = require('steam-community'),\n    client = steam.createClient();\n\nclient.user(\"12345678901234567\", function(err, user){\n\t\tconsole.log(util.inspect(user, false, 4, true));\n});\n</pre>\n\nThere's also a `games` function. You use it like this:\n\n<pre>\nvar steam = require('steam-community'),\n    client = steam.createClient();\n\nclient.games(\"12345678901234567\", function(err, games){\n\t\tconsole.log(util.inspect(games, false, 4, true));\n});\t\n</pre>\n\nWhere `games` is a JSON array of objects that look something like this:\n\n<pre>\n{ \n   appID: '42910',\n   name: 'Magicka',\n   logo: 'http://media.steampowered.com/steamcommunity/public/images/apps/42910/8c59c674ef40f59c3bafde8ff0d59b7994c66477.jpg',\n   storeLink: 'http://store.steampowered.com/app/42910',\n   hoursOnRecord: '1.1',\n   statsLink: 'http://steamcommunity.com/profiles/12345678901234567/stats/Magicka',\n   globalStatsLink: 'http://steamcommunity.com/stats/Magicka/achievements/'\n} \n</pre>\n\n## Options\n\nThe default options look like this:\n\n    var options = {\n        timeout : 10000,\n        retries : 10,\n        strategy : {\n            \"type\": steam.STRATEGIES.EXPONENTIAL,\n            \"initial\":800,\n            \"base\":2,\n            \"max\":3200\n        }\n    }\n\neverything except `timeout` is documented in [Re](https://npmjs.org/package/re), (and get's passed to it).\n\n\n",
-  "readmeFilename": "README.md",
-  "_id": "steam-community@0.1.5-5",
-  "_from": "steam-community@0.1.5-5",
-  "dist": {
-    "shasum": "d3ceb21bcf03bba34c28e93523c50fd5053ff1f2"
-  },
-  "_resolved": "https://registry.npmjs.org/steam-community/-/steam-community-0.1.5-5.tgz"
+	"name": "steam-community",
+	"description": "Easily access information about yourself and your friends on the Steam community website.",
+	"version": "0.1.5-6",
+	"main": "./main",
+	"keywords": ["steam", "data", "util", "utility"],
+	"repository":{
+		"type": "git",
+		"url" : "https://github.com/waylonflinn/steam-community.git"
+	},
+	"author": {
+		"name": "Waylon Flinn",
+		"email": "waylonflinn@gmail.com"
+	},
+	"engines": {
+		"node": ">=0.6"
+	},
+	"dependencies": {
+		"request": "2.10.x",
+		"xml2js": "0.1.x",
+		"re": "0.1.x"
+	},
 }
