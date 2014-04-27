@@ -18,7 +18,7 @@ Get your 64bit steam ID and plug it in. You'll get back an object with all the i
 
 <pre>
 var steam = require('steam-community'),
-    client = steam.createClient();
+    client = steam();
 
 client.user("12345678901234567", function(err, user){
 		console.log(util.inspect(user, false, 4, true));
@@ -29,7 +29,7 @@ There's also a `games` function. You use it like this:
 
 <pre>
 var steam = require('steam-community'),
-    client = steam.createClient();
+    client = steam();
 
 client.games("12345678901234567", function(err, games){
 		console.log(util.inspect(games, false, 4, true));
