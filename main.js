@@ -1,5 +1,4 @@
 var util = require('util'),
-	fs = require('fs'),
 	request = require('request'),
 	xml2js = require('xml2js'),
 	Re = require('re');
@@ -9,19 +8,14 @@ var STEAM_PROFILE_USER_FORMAT = "http://steamcommunity.com/profiles/%s?xml=1",
 	STEAM_PROFILE_GAME_FORMAT = "http://steamcommunity.com/profiles/%s/games?tab=all&xml=1&l=english",
 	STEAM_PROFILE_FRIENDS_FORAMT = "http://steamcommunity.com/profiles/%s/friends?tab=all&xml=1";
 
-var TIMEOUT_DEFAULT = 10000,
+var PRIVATE_STATUS_CODE = 403, // http status code to use for private profiles
+	TIMEOUT_DEFAULT = 10000,
 	STRAT_DEFAULT = {"type": Re.STRATEGIES.EXPONENTIAL, "initial":800, "base":2, "max":3200};
 
 var parser = new xml2js.Parser();
 
-exports.STRATEGIES = Re.STRATEGIES;
-
-exports.createClient = function(options){
-	return new Client(options);
-};
-
 function Client(options){
-	if(!(this instanceof Client)) return Client(options);
+	if(!(this instanceof Client)) return new Client(options);
 
 	options = options || {};
 
@@ -30,6 +24,12 @@ function Client(options){
 
 	this.options = options;
 }
+
+
+
+module.exports = Client;
+
+Client.STRATEGIES = Re.STRATEGIES;
 
 Client.prototype.user = function(steamID, callback){
 
@@ -40,7 +40,8 @@ Client.prototype.user = function(steamID, callback){
 	});
 };
 
-/* Get a list of games for the user with the specified steamID (string)
+/* Get a list of games for the user with the specified 64bit Steam ID.
+ * steamID: stringified 17 digit number that identies a user profile.
  *
  * callback: function(err, (Array) gameList)
  * 
@@ -72,6 +73,23 @@ Client.prototype.games = function(steamID, callback){
 	});
 };
 
+/* return whether or not the profile is private
+ */
+function isPrivate(xml){
+	// as of 2014-04-27 valid documents start with:
+	/* <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	 * <gamesList>
+	 */
+	// private profiles start with:
+	/* <!DOCTYPE html>
+		<html>
+		<head>
+	 */
+	// this is our indicator that the profile is private
+	// check to see if document starts with html DOCTYPE
+	return (xml.trim().lastIndexOf("<!DOCTYPE html>", 0) === 0)
+}
+
 /* This does the work of both functions (user and games). It wraps a request
  * and parsing operation in an exponential backoff retry (re.try).
  */
@@ -88,9 +106,13 @@ Client.prototype.get = function(urlFormat, steamID, callback){
 	this.re.try(function(retryCount, done){
 		request.get(options, function(err, response, xml){
 
-			// TODO: check if we got a 503 response before trying to parse
 			// if the request failed, report a failure
 			if(err) return done(err, null, retryCount);
+			if(response.statusCode == 503) return done(new Error("Service Unavailable", null, retryCount));
+
+			// convert Steam's ghetto private profile page into a RESTful status code
+			if(isPrivate(xml)) return callback({"code":PRIVATE_STATUS_CODE, "message":"Profile is private."}, null, retryCount);
+
 
 			parser.parseString(xml, function(err, result){
 				done(err, result, retryCount);
