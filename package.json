@@ -1,7 +1,7 @@
 {
 	"name": "steam-community",
 	"description": "Easily access information about yourself and your friends on the Steam community website.",
-	"version": "0.2.0-4",
+	"version": "0.2.0-5",
 	"main": "./lib/steam-community.js",
 	"keywords": ["steam", "data", "util", "utility"],
 	"repository":{
